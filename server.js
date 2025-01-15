@@ -1,9 +1,22 @@
 const WebSocket = require("ws");
+const express = require("express");
+const app = express();
 
-const PORT = 5000;
+const HTML_PORT = process.env.PORT || 8080;
+const WS_PORT = 5000;
+
 
 const wsServer = new WebSocket.Server({
-  port: PORT,
+  port: WS_PORT,
+});
+
+app.listen(HTML_PORT, () => {
+  console.log("Server started on port", HTML_PORT);
+});
+
+app.get("/", (req, res) => {
+  const timestamp = Date.now();
+  res.send(`Timestamp:${timestamp} Subscribe to Slomo's channel`);
 });
 
 wsServer.on("connection", function (socket) {
@@ -16,8 +29,9 @@ wsServer.on("connection", function (socket) {
     // socket.send("Take this back: " + msg);
 
     // Broadcast that message to all connected clients
+    const timestamp = Date.now();
     wsServer.clients.forEach(function (client) {
-      client.send("Someone said: " + msg);
+      client.send(`Timestamp:${timestamp} Someone said: ${msg}`);
     });
   });
 
@@ -26,4 +40,4 @@ wsServer.on("connection", function (socket) {
   });
 });
 
-console.log(new Date() + " Server is listening on port " + PORT);
+console.log(new Date() + " Server is listening on port " + WS_PORT);
