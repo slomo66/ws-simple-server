@@ -10,14 +10,7 @@ const wsServer = new WebSocket.Server({
   port: WS_PORT,
 });
 
-app.listen(HTML_PORT, () => {
-  console.log("Server started on port", HTML_PORT);
-});
-
-app.get("/", (req, res) => {
-  const timestamp = Date.now();
-  res.send(`Timestamp:${timestamp} Subscribe to Slomo's channel`);
-});
+// Websockets
 
 wsServer.on("connection", function (socket) {
   // Some feedback on the console
@@ -39,5 +32,18 @@ wsServer.on("connection", function (socket) {
     console.log("Client disconnected");
   });
 });
+
+// Webserver
+
+app.listen(HTML_PORT, () => {
+  console.log("Server started on port", HTML_PORT);
+});
+
+app.get("/", (req, res) => {
+  const timestamp = Date.now();
+  res.send(`Timestamp:${timestamp} Subscribe to Slomo's channel`);
+});
+
+
 
 console.log(new Date() + " Server is listening on port " + WS_PORT);
